@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="
+    http://www.springframework.org/schema/beans 
+    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd 
+    http://www.springframework.org/schema/tx 
+    http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+    http://www.springframework.org/schema/aop 
+    http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+    http://www.springframework.org/schema/context 
+    http://www.springframework.org/schema/context/spring-context-3.0.xsd
+    ">
+	<!-- 开启注解 -->
+	<context:annotation-config/>
+	
+	<!-- 自动扫描与装配bean -->
+	<context:component-scan base-package="com.hp"></context:component-scan>
+	
+	<!-- 配置数据源 -->
+	<bean	id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+		<property name="driverClass" value="com.mysql.jdbc.Driver"/>
+		<property name="jdbcUrl" value="jdbc:mysql://localhost:3306/equipmentsysment"/>
+		<property name="user" value="hupi"/>
+		<property name="password" value="123456"/>
+		<property name="maxPoolSize" value="40"/>
+		<property name="minPoolSize" value="1"/>
+		<property name="initialPoolSize" value="1"/>
+		<property name="maxIdleTime" value="20"/>
+	</bean>
+
+	<!-- 配置sessionfactory -->
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<!-- 设置数据源 -->	
+		<property name="dataSource" ref="dataSource"/>
+		
+		<!--  -->
+		<property name="packagesToScan">
+			<value>com.hp.domain</value>
+		</property>
+		<!--  -->
+		<property name="hibernateProperties">
+			<value>
+				hibernate.dialect = org.hibernate.dialect.SQLServerDialect
+				hibernate.hbm2dd1.auto=update
+				hibernate.show_sql=true
+			</value>
+		</property>
+	</bean>
+    
+</beans>
