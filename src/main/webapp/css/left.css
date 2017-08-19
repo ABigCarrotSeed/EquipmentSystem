@@ -1,0 +1,62 @@
+
+/*左侧信息区域*/
+#left{
+	width: 250px;
+	height:100%;
+	float: left;
+	border: solid 1px #A0A0A0;
+	border-bottom: none;
+	margin-left: 10px;
+	margin-top: 5px;
+}
+/*左侧信息区域的head*/
+#left #head1{
+	background-color: #99B4D1;
+	width: 250px;
+	height: 70px;
+	float: left;
+	border-bottom: solid 1px #A0A0A0;	
+}
+
+#head1 #img1{
+	width: 60px;
+	height: 60px;
+}
+
+#head1 #table1{
+	margin-left: 30px;
+	margin-top: 3px;
+}
+
+#head1 #table2{
+	margin-left: 30px;
+	margin-top: 3px;
+	border-spacing: 10px;
+}
+
+#left #head2{
+	background-color: #A9DBF6;
+	width: 250px;
+	height: 35px;
+	float: left;
+	border-bottom: solid 1px #A0A0A0;
+}
+/*head部分的文字*/
+#head2 #text2{
+	margin-left: 85px;
+	display: block;
+	font-size:18px;
+	margin-top: 8px;
+}
+
+#left #info1{
+	width: 250px;
+	float: left;
+}
+
+#info1 li{
+	list-style-type: none;
+	margin-left: 20px;
+	margin-top: 10px;
+	font-weight: bold;
+}

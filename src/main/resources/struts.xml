@@ -4,10 +4,35 @@
     "http://struts.apache.org/dtds/struts-2.0.dtd">
     
  <struts>
+ 	<!-- 后缀名 -->
+	<constant name="struts.action.extension" value="do,action"/>
  	<constant name="struts.objectFacory" value="spring"/>
  	<package name="default" extends="struts-default">
- 		<action name="login" class="loginAction" method="login">
- 			<result name="success">/WEB-INF/jsp/success.jsp</result>
+ 		<!-- 配置自己的拦截器 -->
+ 		<interceptors>
+ 		<interceptor name="loginInterceptor" class="com.hp.interceptor.LoginInterceptor"/>
+ 		<interceptor-stack name="myInterceptor">
+ 			<interceptor-ref name="loginInterceptor">
+ 				<param name="excludeMethods">login,logOut</param>
+ 			</interceptor-ref>
+ 			<interceptor-ref name="defaultStack"></interceptor-ref>
+ 		</interceptor-stack>
+ 		</interceptors>
+ 		<!-- 定义拦截器栈 -->
+ 		<default-interceptor-ref name="myInterceptor"/>
+ 		<global-results>
+ 			<result name="goLogin">/WEB-INF/jsp/loginUI.jsp</result>
+ 		</global-results>
+ 		
+ 		<action name="home_*" class="homeAction" method="{1}">
+ 			<result name="head">/WEB-INF/jsp/self/head.jsp</result>
+ 			<result name="left">/WEB-INF/jsp/self/left.jsp</result>
+ 			<result name="right">/WEB-INF/jsp/self/right.jsp</result>
+ 		</action>
+ 		
+ 		<action name="log_*" class="loginAction" method="{1}">
+ 			<result name="success">/WEB-INF/jsp/self/main.jsp</result>
+ 			<result name="logOut">/WEB-INF/jsp/loginUI.jsp</result>
  			<result name="error">/WEB-INF/jsp/error.jsp</result>
  		</action>
  	</package>

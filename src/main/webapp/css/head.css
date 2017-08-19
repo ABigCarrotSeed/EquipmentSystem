@@ -1,0 +1,19 @@
+/*页面的head部分*/
+#head{
+	width: 100%;
+	height: 72px;
+	margin-top:2px;
+	border: solid 1px #A0A0A0;
+}
+/*head 的 iamge*/
+#head #img1{
+	width: 480px;
+	height: 72px;
+	float: left;
+}
+/*head 的文字部分*/
+#head #logInfo1{
+	position:absolute;
+	right:40px;
+	top:40px;
+}
