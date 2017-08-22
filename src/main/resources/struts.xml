@@ -35,6 +35,12 @@
  			<result name="logOut">/WEB-INF/jsp/loginUI.jsp</result>
  			<result name="error">/WEB-INF/jsp/error.jsp</result>
  		</action>
+ 		
+ 		<action name="change_*" class="userAction" method="{1}">
+ 			<result name="goChangePasswordUI">/WEB-INF/jsp/self/changePasswordUI.jsp</result>
+ 			<result name="success">/WEB-INF/jsp/self/changePasswordSuccess.jsp</result>
+ 		</action>
+ 		
  	</package>
  	
  </struts>

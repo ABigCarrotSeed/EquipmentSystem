@@ -30,7 +30,7 @@
     	
     	<div id="info1">
     	<ul>
-    	<li><a target="right" href="${pageContext.request.contextPath}/changePassword.do?flag=goChangUI">用户设置</a></li>
+    	<li><a target="right" href="${pageContext.request.contextPath}/change_goChangePasswordUI.do">用户设置</a></li>
     	<li><a target="right" href="${pageContext.request.contextPath}/maintain_goSelectUI.do">设备保养</a></li>
     	<li><a target="right" href="${pageContext.request.contextPath}/maintain_goConfirmUI.do">保养确认</a></li>
     	<li><a target="right" href="${pageContext.request.contextPath}/query_goQueryUI.do">保养报表查询</a></li>

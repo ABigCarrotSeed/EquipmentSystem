@@ -5,6 +5,7 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.hibernate.Query;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Service;
 
@@ -27,5 +28,19 @@ public class UserService {
 			return (Users) list.get(0);
 		}
 		return null;
+	}
+	
+	public Boolean changePassword(Users user){
+		System.out.println(user.getPassword()+" "+ user.getId());
+		Session session = sessionFactory.getCurrentSession();
+		session.beginTransaction();
+		session.update(user);
+		session.flush();
+		session.getTransaction().commit();
+		return true;
+	}
+
+	public void setSessionFactory(SessionFactory sessionFactory) {
+		this.sessionFactory = sessionFactory;
 	}
 }
