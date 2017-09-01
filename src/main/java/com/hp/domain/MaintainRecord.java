@@ -22,9 +22,9 @@ public class MaintainRecord implements java.io.Serializable {
 	// Fields
 
 	private Integer id;
-	private Users usersByEnId;
+	private Users usersByEnId;//确认人
 	private Equipment equipment;
-	private Users usersByUId;
+	private Users usersByUId;//保养人
 	private MaintainItems maintainItems;
 	private Timestamp maintaintime;
 	private String firstResult;

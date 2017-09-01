@@ -1,0 +1,44 @@
+
+
+.inputInfo{
+	border: #A9A9A9 2px solid;
+	margin-left: 20px;
+	margin-top: 10px;
+}
+
+
+.inputInfo .text1{
+	border-bottom: #A9A9A9 1px solid;
+	border-left:none;
+	border-right:none;
+	border-top:none;
+	outline: none;
+}
+
+.inputInfo table{
+	border-spacing: 10px;
+}
+
+.maintainTable{
+	padding:10px;
+	border: #A9A9A9 2px solid;
+	margin-left: 20px;
+	margin-top: 10px;
+}
+
+.maintainTable td{
+	padding:2px 10px;
+	height:20px;
+	text-align: center;
+}
+
+.maintainTable th{
+	padding:2px 10px;
+	height:20px;
+	text-align: center;
+	background-color: gray;
+}
+ 
+.maintainTable #submit{
+	text-align: right;
+}

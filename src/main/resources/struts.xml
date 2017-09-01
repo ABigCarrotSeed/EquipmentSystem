@@ -41,6 +41,16 @@
  			<result name="success">/WEB-INF/jsp/self/changePasswordSuccess.jsp</result>
  		</action>
  		
+ 		<action name="maintain_*" class="maintainAction" method="{1}">
+ 			<result name="goSelectLineUI">/WEB-INF/jsp/maintain/selectLineUI.jsp</result>
+ 			<result name="goInputEquipmentInfoUI">/WEB-INF/jsp/maintain/inputEquipmentInfoUI.jsp</result>
+ 			<result name="goSelectTypeUI">/WEB-INF/jsp/maintain/selectTypeUI.jsp</result>
+ 			<result name="goMaintainItemsUI">/WEB-INF/jsp/maintain/maintainItemsUI.jsp</result>
+ 			<result name="goSelectTypeUIAction" type="chain">maintain_goSelectTypeUI</result>
+ 			<result name="goConfirmUI">/WEB-INF/jsp/maintain/confirmUI.jsp</result>
+ 			<result name="getQueryConfirmObject">/WEB-INF/jsp/maintain/confirmUI.jsp</result>
+ 			<result name="confirmOkUI">/WEB-INF/jsp/maintain/confirmUI.jsp</result>
+ 		</action>
  	</package>
  	
  </struts>
