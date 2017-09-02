@@ -80,7 +80,7 @@ $(document).ready(function(){
 		 $("[type='checkbox']").removeAttr("checked");
 	 });
 	 
-	 //
+	 //选择 非 日 周保养时 月选框变为不可选，选择周期后自动选择当前年 月
 	 $("#dateType").change(function(){
 		 var type = $("#dateType").val();
 		 var nowDate= new Date();
@@ -96,4 +96,12 @@ $(document).ready(function(){
 			 $("#month").css("background-color","gray");
 		 }
 	 });
+	 
+	 //
+	 var year = $(".checkYear").val();
+	 if(year==0){
+		 $(".maintainTable").hide();
+	 }else{
+		 $(".maintainTable").show();
+	 }
 })

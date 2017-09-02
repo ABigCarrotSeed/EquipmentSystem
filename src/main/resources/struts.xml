@@ -51,6 +51,17 @@
  			<result name="getQueryConfirmObject">/WEB-INF/jsp/maintain/confirmUI.jsp</result>
  			<result name="confirmOkUI">/WEB-INF/jsp/maintain/confirmUI.jsp</result>
  		</action>
+ 		
+ 		<action name="query_*" class="queryFormAction" method="{1}">
+ 			<result name="goQueryUI">/WEB-INF/jsp/query/queryUI.jsp</result>
+ 			<result name="getEquipmentList">/WEB-INF/jsp/query/queryUI.jsp</result>
+ 			<result name="goDayFormUI">/WEB-INF/jsp/query/dayFormUI.jsp</result>
+ 			<result name="goWeekFormUI">/WEB-INF/jsp/query/weekFormUI.jsp</result>
+ 			<result name="goMonthFormUI">/WEB-INF/jsp/query/monthFormUI.jsp</result>
+ 			<result name="goQuarterFormUI">/WEB-INF/jsp/query/quarterFormUI.jsp</result>
+ 			<result name="goHalfyearFormUI">/WEB-INF/jsp/query/halfyearFormUI.jsp</result>
+ 			<result name="goYearFormUI">/WEB-INF/jsp/query/yearFormUI.jsp</result>
+ 		</action>
  	</package>
  	
  </struts>

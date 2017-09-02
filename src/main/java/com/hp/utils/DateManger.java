@@ -1,6 +1,7 @@
 package com.hp.utils;
 
 import java.sql.Timestamp;
+import java.util.Calendar;
 import java.util.Date;
 
 public class DateManger {
@@ -42,6 +43,11 @@ public class DateManger {
 		return runTimeOfHour;
 	}
 	
+	/**
+	 * 获取运行天数
+	 * @param runTimeOfHour
+	 * @return
+	 */
 	public static int[] getRunTimeOfDay(int[] runTimeOfHour){
 		int[] runTimeOfDay = new int[6];
 		
@@ -53,5 +59,29 @@ public class DateManger {
 			}
 		}
 		return runTimeOfDay;
+	}
+	
+	/**
+	 * 获取该月第一个星期天是几号
+	 * @param year
+	 * @param month
+	 * @return
+	 */
+	public static int getFirstSundayOfMonth(int year, int month)
+	{
+		Calendar cal = Calendar.getInstance();
+
+		cal.set(Calendar.YEAR, year);
+		cal.set(Calendar.MONTH, month - 1);
+		cal.set(Calendar.DATE, 1); // 设为第一天
+
+		int i=1;
+		while (cal.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY)
+		{
+			i++;
+			cal.add(Calendar.DATE, 1);
+		}
+
+		return i;
 	}
 }
