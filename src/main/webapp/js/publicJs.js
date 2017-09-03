@@ -97,11 +97,12 @@ $(document).ready(function(){
 		 }
 	 });
 	 
-	 //
+	 //第一次进入查询页面时 year的值是零 此时隐藏table
 	 var year = $(".checkYear").val();
 	 if(year==0){
 		 $(".maintainTable").hide();
 	 }else{
 		 $(".maintainTable").show();
 	 }
+	 
 })

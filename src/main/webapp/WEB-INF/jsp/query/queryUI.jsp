@@ -93,6 +93,14 @@
    					<input type="hidden" value="${year }" class="checkYear"/>
    					<input type="hidden" value="${month }"/>
    				</table>
+			  	<s:a href="query_getEquipmentList.do?year=%{year}&month=%{month}&dateType=%{dateType}&page=1" theme="simple">首页</s:a>
+			  	<s:if test="%{page!=1}">
+				<s:a href="query_getEquipmentList.do?year=%{year}&month=%{month}&dateType=%{dateType}&page=%{page-1}" id="lastPage">上一页</s:a>
+				</s:if>
+				<s:if test="%{page!=maxPage}">
+				<s:a href="query_getEquipmentList.do?year=%{year}&month=%{month}&dateType=%{dateType}&page=%{page+1}" id="nextPage">下一页</s:a>
+				</s:if>
+				<s:a href="query_getEquipmentList.do?year=%{year}&month=%{month}&dateType=%{dateType}&page=%{maxPage}">末页</s:a>
    			</form>
    		</div>
    	</div>

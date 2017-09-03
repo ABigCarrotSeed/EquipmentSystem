@@ -27,6 +27,10 @@ public class QueryFormAction implements RequestAware,SessionAware{
 	private String equipmentEid;
 	private String lineName;
 	
+	//用于分页
+	private int page = 1;
+	private int maxPage;
+	
 	private Map<String,Object> request ;
 	private Map<String,Object> session;
 	
@@ -45,7 +49,10 @@ public class QueryFormAction implements RequestAware,SessionAware{
 	public String getEquipmentList(){
 		request.put("type", "保养记录查询");
 		Users user = (Users) session.get("user");
-		List<Equipment> list = equipmentService.getAllEquipment(user);
+		//总页数
+		maxPage = equipmentService.getPageTotal(user, 5);
+		//获取前五项设备信息，用于分页
+		List<Equipment> list = equipmentService.getEquipmentByPage(user, page, 5);
 		request.put("equipmentList", list);
 		return "getEquipmentList";
 	}
@@ -131,5 +138,21 @@ public class QueryFormAction implements RequestAware,SessionAware{
 
 	public void setLineName(String lineName) {
 		this.lineName = lineName;
+	}
+
+	public int getPage() {
+		return page;
+	}
+
+	public void setPage(int page) {
+		this.page = page;
+	}
+
+	public int getMaxPage() {
+		return maxPage;
+	}
+
+	public void setMaxPage(int maxPage) {
+		this.maxPage = maxPage;
 	}
 }
