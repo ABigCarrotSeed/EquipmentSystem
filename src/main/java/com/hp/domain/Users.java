@@ -86,7 +86,7 @@ public class Users implements Serializable{
 		this.post = post;
 	}
 	
-	@ManyToOne(fetch=FetchType.LAZY)//¿ªÆôÀÁ¼ÓÔØ
+	@ManyToOne(fetch=FetchType.LAZY)//å¼€å¯æ‡’åŠ è½½
 	@JoinColumn(name="d_id")
 	public Department getDepartment() {
 		return department;

@@ -39,8 +39,8 @@ public class EquipmentService {
 	/**
 	 * 
 	 * @param user
-	 * @param page µ±Ç°Ò³
-	 * @param pageSize Ã¿Ò³ÏÔÊ¾µÄÊıÁ¿ 
+	 * @param page å½“å‰é¡µ
+	 * @param pageSize é¡µé¢æ˜¾ç¤ºæ•°
 	 * @return
 	 */
 	public List<Equipment> getEquipmentByPage(Users user,int page,int pageSize){

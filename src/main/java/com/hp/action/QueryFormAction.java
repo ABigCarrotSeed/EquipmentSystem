@@ -27,7 +27,7 @@ public class QueryFormAction implements RequestAware,SessionAware{
 	private String equipmentEid;
 	private String lineName;
 	
-	//ÓÃÓÚ·ÖÒ³
+	//åˆå§‹é¡µé¢
 	private int page = 1;
 	private int maxPage;
 	
@@ -42,16 +42,16 @@ public class QueryFormAction implements RequestAware,SessionAware{
 	private MaintainRecordService maintainRecordService;
 	
 	public String goQueryUI(){
-		request.put("type", "±£Ñø¼ÇÂ¼²éÑ¯");
+		request.put("type", "ä¿å…»è®°å½•æŸ¥è¯¢");
 		return "goQueryUI";
 	}
 
 	public String getEquipmentList(){
-		request.put("type", "±£Ñø¼ÇÂ¼²éÑ¯");
+		request.put("type", "ä¿å…»è®°å½•æŸ¥è¯¢");
 		Users user = (Users) session.get("user");
-		//×ÜÒ³Êı
+		//è·å–é¡µé¢æ€»æ•°
 		maxPage = equipmentService.getPageTotal(user, 5);
-		//»ñÈ¡Ç°ÎåÏîÉè±¸ĞÅÏ¢£¬ÓÃÓÚ·ÖÒ³
+		//è·å–å½“å‰é¡µçš„ä¿¡æ¯
 		List<Equipment> list = equipmentService.getEquipmentByPage(user, page, 5);
 		request.put("equipmentList", list);
 		return "getEquipmentList";
@@ -60,9 +60,9 @@ public class QueryFormAction implements RequestAware,SessionAware{
 	public String goFormUI(){
 		List<MaintainItems> maintainItems = maintainItemsService.getMaintainItemsByEid(equipmentEid, dateType);
 		request.put("maintainItems", maintainItems);
-		List<String> record = null;//±£Ñø½á¹ûĞÅÏ¢
-		List<String> maintancePerson = null;//±£ÑøÈËĞÅÏ¢
-		List<String> confirmPerson = null;//È·ÈÏÈËĞÅÏ¢
+		List<String> record = null;//ä¿å…»ç»“æœä¿¡æ¯
+		List<String> maintancePerson = null;//ä¿å…»äººä¿¡æ¯
+		List<String> confirmPerson = null;//ç¡®è®¤äººä¿¡æ¯
 
 		for(int i=0 ; i < maintainItems.size() ;i++){
 			record = maintainRecordService.getRecord(equipmentEid, maintainItems.get(i).getId(), year, month,dateType);

@@ -26,14 +26,14 @@ import com.hp.service.EquipmentService;
 @Scope("prototype")
 public class MaintainAction implements SessionAware,RequestAware{
 
-	private String lineName;//Ïß±ğÃû
-	private String equipmentEId;//Éè±¸Âë
-	private String dateType;//±£ÑøÖÜÆÚÀàĞÍ
-	private int year;//±£ÑøÈ·ÈÏÊ±»ñÈ¡µÄÄê·İ
-	private int month;//±£ÑøÈ·ÈÏÊ±»ñÈ¡µÄÔÂ·İ
-	//¼ÇÂ¼±£Ñø½á¹û
+	private String lineName;//çº¿åˆ«å
+	private String equipmentEId;//è®¾å¤‡ç 
+	private String dateType;//ä¿å…»å‘¨æœŸ
+	private int year;
+	private int month;
+	//ä¿å…»è®°å½•
 	private List<MaintainRecord> recodeList;
-	//¼ÇÂ¼È·ÈÏ½á¹û
+	//ç¡®è®¤ä¿¡æ¯
 	private List<ConfirmInfo> confirmList;
 	@Resource
 	private LineService lineService;
@@ -47,42 +47,42 @@ public class MaintainAction implements SessionAware,RequestAware{
 	private Map<String,Object> request;
 	
 	/**
-	 * Ìø×ªµ½Ñ¡ÔñÏß±ğÒ³Ãæ
+	 * è·³è½¬åˆ°é€‰æ‹©çº¿åˆ«é¡µé¢
 	 * @return
 	 */
 	public String goSelectLineUI(){
-		request.put("type", "Ñ¡ÔñÏß±ğ");
+		request.put("type", "é€‰æ‹©çº¿åˆ«");
 		Users user = (Users) session.get("user");
 		List<String> lineName = lineService.getLineNameByUser(user);
 		request.put("LineName", lineName);
 		return "goSelectLineUI";
 	}
 	/**
-	 * Ìø×ªµ½ÊäÈëÉè±¸ÂëÒ³Ãæ
+	 * è·³è½¬åˆ°è¾“å…¥è®¾å¤‡ç é¡µé¢
 	 * @return
 	 */
 	public String goInputEquipmentInfoUI(){
-		request.put("type", "±£ÑøÉè±¸Âë");
+		request.put("type", "ä¿å…»è®¾å¤‡ç ");
 		request.put("lineName", lineName);
 		Users user = (Users) session.get("user");
-		//±ãÓÚ²âÊÔ  ½«¸ÃÓÃ»§²¿ÃÅÏÂµÄËùÓĞÉè±¸ĞÅÏ¢ÏÔÊ¾³öÀ´
+		//ä¾¿äºæµ‹è¯•  å°†è¯¥ç”¨æˆ·éƒ¨é—¨ä¸‹çš„æ‰€æœ‰è®¾å¤‡ä¿¡æ¯æ˜¾ç¤ºå‡ºæ¥
 		List<Equipment> list = equipmentService.getAllEquipment(user);
 		request.put("equipmentList", list);
 		return "goInputEquipmentInfoUI";
 	}
 
 	/**
-	 * Ìø×ªµ½Ñ¡Ôñ±£ÑøÖÜÆÚÒ³Ãæ
+	 * è·³è½¬åˆ°é€‰æ‹©ä¿å…»å‘¨æœŸé¡µé¢
 	 * @return
 	 */
 	public String goSelectTypeUI(){
-		request.put("type", "Ñ¡Ôñ±£ÑøÖÜÆÚ");
+		request.put("type", "Ñ¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½");
 		Equipment equipment = equipmentService.getEquipmentByEId(equipmentEId);
 		request.put("equipment", equipment);
 		
-		//±£ÑøÖÜÆÚÀàĞÍ
+		//ä¿å…»å‘¨æœŸç±»å‹
 		String[] type = {"day","week","month","quarter","halfyear","year"};
-		Timestamp[]  lastTime =  new Timestamp[6];//ÓÃÓÚ´æ·Å¸÷±£ÑøÖÜÆÚµÄ×îºóÒ»´Î±£ÑøÊ±¼ä
+		Timestamp[]  lastTime =  new Timestamp[6];//ç”¨äºå­˜æ”¾å„ä¿å…»å‘¨æœŸçš„æœ€åä¸€æ¬¡ä¿å…»æ—¶é—´
 		for(int i=0;i<type.length;i++){
 			lastTime[i] = maintainRecordService.getLastMaintainTime(equipmentEId,type[i]);
 		}
@@ -97,11 +97,11 @@ public class MaintainAction implements SessionAware,RequestAware{
 	}
 	
 	/**
-	 * Ìø×ªµ½±£ÑøÏîÄ¿Ò³Ãæ
+	 * è·³è½¬åˆ°ä¿å…»é¡¹ç›®é¡µé¢
 	 * @return
 	 */
 	public String goMaintainItemsUI(){
-		request.put("type", "±£ÑøÏîÄ¿");
+		request.put("type", "ä¿å…»é¡¹ç›®");
 		Equipment equipment = equipmentService.getEquipmentByEId(equipmentEId);
 		request.put("equipment", equipment);
 		List<MaintainItems> list = maintainItemsService.getMaintainItemsByEid(equipmentEId, dateType);
@@ -110,7 +110,7 @@ public class MaintainAction implements SessionAware,RequestAware{
 	}
 	
 	/**
-	 * ±£´æ±£Ñø¼ÇÂ¼ ²¢Ìø×ªµ½ Ñ¡Ôñ±£ÑøÖÜÆÚ½çÃæ
+	 * ä¿å­˜ä¿å…»è®°å½• å¹¶è·³è½¬åˆ° é€‰æ‹©ä¿å…»å‘¨æœŸç•Œé¢
 	 * @return
 	 */
 	public String saveMaintainResult(){
@@ -125,18 +125,18 @@ public class MaintainAction implements SessionAware,RequestAware{
 	}
 	
 	/**
-	 * Ìø×ªµ½±£ÑøÈ·ÈÏUI
+	 * è·³è½¬åˆ°ä¿å…»ç¡®è®¤UI
 	 */
 	public String goConfirmUI(){
-		request.put("type", "±£ÑøÈ·ÈÏ");
+		request.put("type", "ä¿å…»ç¡®è®¤");
 		return "goConfirmUI";
 	}
 	/**
-	 * ²éÑ¯´ıÈ·ÈÏÏîÄ¿
+	 * æŸ¥è¯¢å¾…ç¡®è®¤é¡¹ç›®
 	 * @return
 	 */
 	public String getQueryConfirmObject(){
-		request.put("type", "±£ÑøÈ·ÈÏ");
+		request.put("type", "ä¿å…»ç¡®è®¤");
 		Users user = (Users) session.get("user");
 		List<String[]> maintianList = maintainRecordService.getConfirmObject(year, month, dateType, user);
 		request.put("maintainList", maintianList);

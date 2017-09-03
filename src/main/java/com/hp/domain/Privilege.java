@@ -28,10 +28,10 @@ public class Privilege implements java.io.Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	private Integer id;
-	private Privilege privilege;//上级权限
+	private Privilege privilege;//涓婄骇鏉冮檺
 	private String url;
 	private String name;
-	private Set<Privilege> privileges = new HashSet<Privilege>(0);//下级权限
+	private Set<Privilege> privileges = new HashSet<Privilege>(0);//涓嬬骇鏉冮檺
 	private Set<Users> users = new HashSet<Users>();
 	// Constructors
 

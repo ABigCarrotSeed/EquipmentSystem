@@ -26,7 +26,7 @@ public class UserAction implements RequestAware,SessionAware{
 	@Resource
 	private UserService userService;
 	public String goChangePasswordUI(){
-		request.put("type", "ÓÃ»§ÉèÖÃ");
+		request.put("type", "ç”¨æˆ·è®¾ç½®");
 		return "goChangePasswordUI";
 	}
 	
@@ -36,13 +36,13 @@ public class UserAction implements RequestAware,SessionAware{
 			if(secondPassword.equals(newPassword)){
 				user.setPassword(newPassword);
 				userService.changePassword(user);
-				request.put("info", "ĞŞ¸ÄÍê³É");
+				request.put("info", "ä¿®æ”¹å®Œæˆ");
 				return "success";
 			}
-			request.put("info", "ÃÜÂëÊäÈë²»Ò»ÖÂ");
+			request.put("info", "å¯†ç è¾“å…¥ä¸ä¸€è‡´");
 			return "success";
 		}
-		request.put("info", "ÃÜÂëÊäÈë´íÎó");
+		request.put("info", "å¯†ç è¾“å…¥é”™è¯¯");
 		return "success";
 	}
 	

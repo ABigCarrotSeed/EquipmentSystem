@@ -8,12 +8,12 @@ public class DateManger {
 
 	/**
 	 * 
-	 * @param lastTime µ±Ç°×îºóÒ»´Î±£ÑøÊ±¼ä
-	 * @return ÏÂ´Î±£ÑøÊ±¼ä
+	 * @param lastTime æœ€åä¸€æ¬¡ä¿å…»æ—¶é—´
+	 * @return ä¸‹æ¬¡ä¿å…»æ—¶é—´
 	 */
 	public static Timestamp[] getNextTime(Timestamp[] lastTime){
 		Timestamp[] nextTime = new Timestamp[6];
-		int[] type = {1,7,30,30*3,30*6,356};//¸÷ÖÖÖÜÆÚµÄÌìÊı
+		int[] type = {1,7,30,30*3,30*6,356};//å„ç§å‘¨æœŸçš„å¤©æ•°
 		for(int i=0 ; i<lastTime.length ; i++){
 			if(lastTime[i] != null){
 				nextTime[i] = new Timestamp(lastTime[i].getTime()+86400000L*type[i]);
@@ -25,7 +25,7 @@ public class DateManger {
 	}
 	
 	/**
-	 * »ñÈ¡»úÆ÷ÔËĞĞÊ±¼ä£¬ÏÖÔÚµÄÊ±¼äÓë±£ÑøÊ±¼äÖ®²î
+	 * è·å–æœºå™¨è¿è¡Œæ—¶é—´ï¼Œç°åœ¨çš„æ—¶é—´ä¸ä¿å…»æ—¶é—´ä¹‹å·®
 	 * @param lastTime
 	 * @return
 	 */
@@ -44,7 +44,7 @@ public class DateManger {
 	}
 	
 	/**
-	 * »ñÈ¡ÔËĞĞÌìÊı
+	 * è·å–è¿è¡Œå¤©æ•°
 	 * @param runTimeOfHour
 	 * @return
 	 */
@@ -62,7 +62,7 @@ public class DateManger {
 	}
 	
 	/**
-	 * »ñÈ¡¸ÃÔÂµÚÒ»¸öĞÇÆÚÌìÊÇ¼¸ºÅ
+	 * è·å–è¯¥æœˆç¬¬ä¸€ä¸ªæ˜ŸæœŸå¤©æ˜¯å‡ å·
 	 * @param year
 	 * @param month
 	 * @return
@@ -73,7 +73,7 @@ public class DateManger {
 
 		cal.set(Calendar.YEAR, year);
 		cal.set(Calendar.MONTH, month - 1);
-		cal.set(Calendar.DATE, 1); // ÉèÎªµÚÒ»Ìì
+		cal.set(Calendar.DATE, 1); // ï¿½ï¿½Îªï¿½ï¿½Ò»ï¿½ï¿½
 
 		int i=1;
 		while (cal.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY)

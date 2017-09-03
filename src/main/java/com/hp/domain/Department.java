@@ -28,12 +28,12 @@ public class Department implements java.io.Serializable {
 	// Fields
 
 	private Integer id;
-	private Department department;//上级部门
+	private Department department;//涓婄骇閮ㄩ棬
 	private String name;
 	private String sit;
 	private Set<Line> lines = new HashSet<Line>(0);
 	private Set<Users> userses = new HashSet<Users>(0);
-	private Set<Department> departments = new HashSet<Department>(0);//下级部门
+	private Set<Department> departments = new HashSet<Department>(0);//涓嬬骇閮ㄩ棬
 
 	// Constructors
 

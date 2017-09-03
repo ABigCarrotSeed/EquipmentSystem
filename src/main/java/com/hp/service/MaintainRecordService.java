@@ -29,14 +29,14 @@ public class MaintainRecordService {
 	@Resource
 	private SessionFactory sessionFactory;
 	
-	//ÔÂÌìÊı
+	//æœˆå¤©æ•°
 	private int[] monthCount = {31,0,31,30,31,30,31,31,30,31,30,31};
 	
 	/**
 	 * 
-	 * @param eId Éè±¸Âë
-	 * @param type ±£ÑøÖÜÆÚÀàĞÍ
-	 * @return ×îºóÒ»´Î±£ÑøÊ±¼ä
+	 * @param eId è®¾å¤‡ç 
+	 * @param type ä¿å…»å‘¨æœŸ
+	 * @return æœ€åä¸€æ¬¡ä¿å…»æ—¶é—´
 	 */
 	public Timestamp getLastMaintainTime(String eId,String type){
 		String hql = "From MaintainRecord m where m.maintainItems.datecycle.type=? AND m.equipment.eid=? AND"+
@@ -55,7 +55,7 @@ public class MaintainRecordService {
 	}
 	
 	/**
-	 * ±£´æÒ»Ìõ¼ÇÂ¼
+	 * ä¿å­˜ä¸€æ¡è®°å½•
 	 * @param maintainRecord
 	 */
 	public void saveMaintainRecord(MaintainRecord maintainRecord){
@@ -64,7 +64,7 @@ public class MaintainRecordService {
 	}
 	
 	/**
-	 * ±£´æÒ»ÏµÁĞ¼ÇÂ¼
+	 * ä¿å­˜ä¸€ç³»åˆ—è®°å½•
 	 * @param list
 	 */
 	public void saveAll(List<MaintainRecord> list){
@@ -74,7 +74,7 @@ public class MaintainRecordService {
 	}
 	
 	/**
-	 * ²éÑ¯³ö ±£Ñø¼ÇÂ¼ID£¬Éè±¸ÌõÂë£¬»úÆ÷ÀàĞÍ£¬»úÆ÷ĞÍºÅ£¬±£ÑøÖÜÆÚ£¬Ïß±ğÃû£¬±£ÑøÊ±¼ä£¬±£ÑøÏîÄ¿£¬±ê×¼£¬±£Ñø½á¹û£¬±£ÑøÕß¹¤ºÅ
+	 * æŸ¥è¯¢å‡º ä¿å…»è®°å½•IDï¼Œè®¾å¤‡æ¡ç ï¼Œæœºå™¨ç±»å‹ï¼Œæœºå™¨å‹å·ï¼Œä¿å…»å‘¨æœŸï¼Œçº¿åˆ«åï¼Œä¿å…»æ—¶é—´ï¼Œä¿å…»é¡¹ç›®ï¼Œæ ‡å‡†ï¼Œä¿å…»ç»“æœï¼Œä¿å…»è€…å·¥å·
 	 * @param year
 	 * @param month
 	 * @param dateType
@@ -89,7 +89,7 @@ public class MaintainRecordService {
 				+ "m.usersByEnId.id IS null";
 		Timestamp startTime;
 		Timestamp endTime;
-		if(month != -1){//ÈÕ£¬ÖÜ±£Ñø
+		if(month != -1){//ï¿½Õ£ï¿½ï¿½Ü±ï¿½ï¿½ï¿½
 			int maxDayOfMonth =  new GregorianCalendar(year, month-1, 1).getActualMaximum(Calendar.DAY_OF_MONTH);
 			startTime =  new Timestamp(new GregorianCalendar(year, month-1, 1, 0, 0, 0).getTimeInMillis());
 			endTime = new Timestamp(new GregorianCalendar(year, month-1, maxDayOfMonth, 23, 59, 59).getTimeInMillis());
@@ -106,20 +106,20 @@ public class MaintainRecordService {
 		List<String[]> info = new ArrayList<String[]>();
 		for(MaintainRecord maintainRecord : list){
 			String[] messge = new String[11];
-			messge[0] = maintainRecord.getEquipment().getEid();//Éè±¸Âë
-			messge[1] = maintainRecord.getEquipment().getMachine().getType();//Éè±¸ÀàĞÍ
-			messge[2] = maintainRecord.getEquipment().getMachine().getVersion();//Éè±¸°æ±¾
-			messge[3] = maintainRecord.getMaintainItems().getDatecycle().getType();//±£ÑøÖÜÆÚ
-			messge[4] = maintainRecord.getMaintaintime().toString();//±£ÑøÊ±¼ä
-			messge[5] = maintainRecord.getMaintainItems().getProject();//±£ÑøÏîÄ¿
-			messge[6] = maintainRecord.getMaintainItems().getNorm();//±£Ñø±ê×¼
+			messge[0] = maintainRecord.getEquipment().getEid();//è®¾å¤‡ç 
+			messge[1] = maintainRecord.getEquipment().getMachine().getType();//è®¾å¤‡ç±»å‹
+			messge[2] = maintainRecord.getEquipment().getMachine().getVersion();//è®¾å¤‡ç‰ˆæœ¬
+			messge[3] = maintainRecord.getMaintainItems().getDatecycle().getType();//ä¿å…»å‘¨æœŸ
+			messge[4] = maintainRecord.getMaintaintime().toString();//ä¿å…»æ—¶é—´
+			messge[5] = maintainRecord.getMaintainItems().getProject();//ä¿å…»é¡¹ç›®
+			messge[6] = maintainRecord.getMaintainItems().getNorm();//ä¿å…»æ ‡å‡†
 			if(maintainRecord.getMaintainItems().getSelection()==0){
 				messge[7] = maintainRecord.getFirstResult();
 			}else{
 				messge[7] = maintainRecord.getSecResult();
 			}
-			messge[8] = maintainRecord.getEquipment().getLine().getName();//Ïß±ğ
-			messge[9] = maintainRecord.getUsersByUId().getName();//±£ÑøÈË
+			messge[8] = maintainRecord.getEquipment().getLine().getName();//çº¿åˆ«
+			messge[9] = maintainRecord.getUsersByUId().getName();//ä¿å…»äºº
 			messge[10] = maintainRecord.getId().toString();
 			info.add(messge);
 		}
@@ -138,17 +138,17 @@ public class MaintainRecordService {
 	}
 	
 	/**
-	 * ·µ»ØÄ³Éè±¸ µÄÄ³Ò»Ìõ±£ÑøÏîÄ¿µÄ±£Ñø½á¹û
+	 *è¿”å›æŸè®¾å¤‡ çš„æŸä¸€æ¡ä¿å…»é¡¹ç›®çš„ä¿å…»ç»“æœ
 	 * @param equipmentEid
 	 * @param maintainItermsId
 	 * @param year
 	 * @param month
-	 * @param type ±£ÑøÖÜÆÚ
+	 * @param type ä¿å…»å‘¨æœŸ
 	 * @return
 	 */
 	public List<String> getRecord(String equipmentEid,int maintainItermsId,int year,int month,String type){
 		List<String> result = new ArrayList<String>();
-		//Èç¹ûÊÇÈòÄê
+		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		if((year%4==0&&year%100!=0)||(year%400==0)){
 			monthCount[1]=29;
 		}else{
@@ -161,6 +161,7 @@ public class MaintainRecordService {
 		Query query = sessionFactory.getCurrentSession().createQuery(hql);
 		query.setParameter(0, equipmentEid);
 		query.setParameter(1, maintainItermsId);
+		
 		if("day".equals(type)){
 			for(int i=0 ; i<monthCount[month-1] ; i++){
 				startTime = new Timestamp(new GregorianCalendar(year, month-1, i+1, 0, 0, 0).getTimeInMillis());
@@ -180,22 +181,22 @@ public class MaintainRecordService {
 			return result;
 		}
 		/**
-		 * ÖÜ±£Ñø²ßÂÔ£º
-		 * 		Ã¿¸öÔÂ¶¼¶¨ÒåÎª5ÖÜ
-		 * 		µÚÒ»ÖÜ´Ó¸ÃÔÂµÄµÚÒ»¸öĞÇÆÚÌì¿ªÊ¼
-		 * 		µÚ¶şÖÜ´Ó¸ÃÔÂµÄµÚ¶ş¸öĞÇÆÚÌì¿ªÊ¼ ÒÔ´ËÀàÍÆ
-		 * 		×îºóÒ»ÖÜµÄ×îºóÒ»ÌìÈô²»ÊÇÖÜ6 ÔòÒÔÏÂÔÂµÄµÚÒ»¸öÖÜÁù×÷Îª×îºóÒ»ÖÜµÄ½ØÖÁÊ±¼ä
+		 * å‘¨ä¿å…»ç­–ç•¥ï¼š
+		 * 		ç¬¬ä¸€å‘¨ä»è¯¥æœˆçš„ç¬¬ä¸€ä¸ªæ˜ŸæœŸå¤©å¼€å§‹
+		 * 		ç¬¬äºŒå‘¨ä»è¯¥æœˆçš„ç¬¬äºŒä¸ªæ˜ŸæœŸå¤©å¼€å§‹ ä»¥æ­¤ç±»æ¨
+		 * 		æœ€åä¸€å‘¨çš„æœ€åä¸€å¤©è‹¥ä¸æ˜¯å‘¨6 åˆ™ä»¥ä¸‹æœˆçš„ç¬¬ä¸€ä¸ªå‘¨å…­ä½œä¸ºæœ€åä¸€å‘¨çš„æˆªè‡³æ—¶é—´
+		 * 		
 		 */
 		if("week".equals(type)){
-			//´Ó¸ÃÔÂµÄµÚÒ»¸öĞÇÆÚÌì¿ªÊ¼Ëã¸ÃÔÂÓĞ¼¸ÖÜ  ·êÓà½øÒ»
+			//ä»è¯¥æœˆçš„ç¬¬ä¸€ä¸ªæ˜ŸæœŸå¤©å¼€å§‹ç®—è¯¥æœˆæœ‰å‡ å‘¨  é€¢ä½™è¿›ä¸€
 			int firstSunday = DateManger.getFirstSundayOfMonth(year, month);
 			int count = ((monthCount[month-1]-firstSunday+1)%7==0)?(monthCount[month-1]-firstSunday+1)/7:(monthCount[month-1]-firstSunday+1)/7+1;
 			for(int i=0 ; i<count; i++){
 				startTime = new Timestamp(new GregorianCalendar(year, month-1, i*7+firstSunday, 0, 0, 0).getTimeInMillis());
-				//¼ÙÈç¸ÃÖÜµÄ½ØÖÁÈÕÆÚ´ó´óÓÚ¸ÃÔÂµÄÌìÊı,½«½ØÖÁÈÕÆÚÉèÎªÏÂÔÂµÄµÚÒ»¸öĞÇÆÚ6
+				//å‡å¦‚è¯¥å‘¨çš„æˆªè‡³æ—¥æœŸå¤§å¤§äºè¯¥æœˆçš„å¤©æ•°,å°†æˆªè‡³æ—¥æœŸè®¾ä¸ºä¸‹æœˆçš„ç¬¬ä¸€ä¸ªæ˜ŸæœŸ6
 				if(i*7+firstSunday<=monthCount[month-1]){
 					endTime = new Timestamp(new GregorianCalendar(year, month-1, i*7+firstSunday+6, 23, 59, 59).getTimeInMillis());
-				}else{//´ÎÔÂµÄµÚÒ»¸öĞÇÆÚ6
+				}else{//æ¬¡æœˆçš„ç¬¬ä¸€ä¸ªæ˜ŸæœŸ6
 					endTime = new Timestamp(new GregorianCalendar(year, month, DateManger.getFirstSundayOfMonth(year, month+1)-1, 23, 59, 59).getTimeInMillis());
 				}
 				query.setParameter(2, startTime);
@@ -290,13 +291,13 @@ public class MaintainRecordService {
 	 * @param equipmentEid
 	 * @param year
 	 * @param month
-	 * @param flag flag Îª0 Ê±È¡ ±£ÑøÈË   Îª1Ê±È¡È·ÈÏÈË
-	 * @param type ±£ÑøÖÜÆÚÀàĞÍ
-	 * @return ±£ÑøÈË»òÊÇÈ·ÈÏÈË
+	 * @param flag flag ä¸º0 æ—¶å– ä¿å…»äºº   ä¸º1æ—¶å–ç¡®è®¤äºº
+	 * @param type ä¿å…»å‘¨æœŸç±»å‹
+	 * @return ä¿å…»äººæˆ–æ˜¯ç¡®è®¤äºº
 	 */
 	public List<String> getmaintainPerson(String equipmentEid,int year,int month,int flag,String type){
 		List<String> maintainPerson = new ArrayList<String>();
-		//¸ù¾İÊÇ·ñÈòÄê È·¶¨2ÔÂµÄÌìÊı
+		//æ ¹æ®æ˜¯å¦é—°å¹´ ç¡®å®š2æœˆçš„å¤©æ•°
 		if((year%4==0&&year%100!=0)||(year%400==0)){
 			monthCount[1]=29;
 		}else{
@@ -309,7 +310,7 @@ public class MaintainRecordService {
 		Query query = sessionFactory.getCurrentSession().createQuery(hql);
 		query.setParameter(0, equipmentEid);
 		query.setParameter(1, type);
-		//±£ÑøÖÜÆÚÎªÈÕ±£ÑøÊ± È¡ ±£ÑøÈË »ò È·ÈÏÈË
+		//ä¿å…»å‘¨æœŸä¸ºæ—¥ä¿å…»æ—¶ å– ä¿å…»äºº æˆ– ç¡®è®¤äºº
 		if("day".equals(type)){
 			for(int i=0 ; i<monthCount[month-1] ; i++){
 				startTime = new Timestamp(new GregorianCalendar(year, month-1, i+1, 0, 0, 0).getTimeInMillis());
@@ -324,7 +325,7 @@ public class MaintainRecordService {
 					if(0==flag){
 							maintainPerson.add(maintainRecord.getUsersByUId().getName());
 					}else if(1==flag){
-						if(maintainRecord.getUsersByEnId()!=null)//Èç¹û»¹Ã»½øĞĞ±£ÑøÈ·ÈÏ¾Í°ÑÈ·ÈÏÈËĞÅÏ¢ÖÃÎªnull
+						if(maintainRecord.getUsersByEnId()!=null)//ï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½Ğ±ï¿½ï¿½ï¿½È·ï¿½Ï¾Í°ï¿½È·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½Îªnull
 							maintainPerson.add(maintainRecord.getUsersByEnId().getName());
 						else
 							maintainPerson.add(null);
@@ -333,17 +334,17 @@ public class MaintainRecordService {
 			}
 			return maintainPerson;
 		}
-		//±£ÑøÖÜÆÚÎªÖÜ±£Ñø 
+		//ä¿å…»å‘¨æœŸä¸ºå‘¨ä¿å…» 
 		if("week".equals(type)){
-			//´Ó¸ÃÔÂµÄµÚÒ»¸öĞÇÆÚÌì¿ªÊ¼Ëã¸ÃÔÂÓĞ¼¸ÖÜ  ·êÓà½øÒ»
+			//ä»è¯¥æœˆçš„ç¬¬ä¸€ä¸ªæ˜ŸæœŸå¤©å¼€å§‹ç®—è¯¥æœˆæœ‰å‡ å‘¨  é€¢ä½™è¿›ä¸€
 			int firstSunday = DateManger.getFirstSundayOfMonth(year, month);
 			int count = ((monthCount[month-1]-firstSunday+1)%7==0)?(monthCount[month-1]-firstSunday+1)/7:(monthCount[month-1]-firstSunday+1)/7+1;
 			for(int i=0 ; i<count; i++){
 				startTime = new Timestamp(new GregorianCalendar(year, month-1, i*7+firstSunday, 0, 0, 0).getTimeInMillis());
-				//¼ÙÈç¸ÃÖÜµÄ½ØÖÁÈÕÆÚ´ó´óÓÚ¸ÃÔÂµÄÌìÊı,½«½ØÖÁÈÕÆÚÉèÎªÏÂÔÂµÄµÚÒ»¸öĞÇÆÚ6
+				//å‡å¦‚è¯¥å‘¨çš„æˆªè‡³æ—¥æœŸå¤§å¤§äºè¯¥æœˆçš„å¤©æ•°,å°†æˆªè‡³æ—¥æœŸè®¾ä¸ºä¸‹æœˆçš„ç¬¬ä¸€ä¸ªæ˜ŸæœŸ6
 				if(i*7+firstSunday<=monthCount[month-1]){
 					endTime = new Timestamp(new GregorianCalendar(year, month-1, i*7+firstSunday+6, 23, 59, 59).getTimeInMillis());
-				}else{//´ÎÔÂµÄµÚÒ»¸öĞÇÆÚ6
+				}else{
 					endTime = new Timestamp(new GregorianCalendar(year, month, DateManger.getFirstSundayOfMonth(year, month+1)-1, 23, 59, 59).getTimeInMillis());
 				}
 				query.setParameter(2,startTime);
@@ -356,7 +357,7 @@ public class MaintainRecordService {
 					if(0==flag){
 							maintainPerson.add(maintainRecord.getUsersByUId().getName());
 					}else if(1==flag){
-						if(maintainRecord.getUsersByEnId()!=null)//Èç¹û»¹Ã»½øĞĞ±£ÑøÈ·ÈÏ¾Í°ÑÈ·ÈÏÈËĞÅÏ¢ÖÃÎªnull
+						if(maintainRecord.getUsersByEnId()!=null)//å¦‚æœè¿˜æ²¡è¿›è¡Œä¿å…»ç¡®è®¤å°±æŠŠç¡®è®¤äººä¿¡æ¯ç½®ä¸ºnull
 							maintainPerson.add(maintainRecord.getUsersByEnId().getName());
 						else
 							maintainPerson.add(null);
@@ -380,7 +381,7 @@ public class MaintainRecordService {
 					if(0==flag){
 							maintainPerson.add(maintainRecord.getUsersByUId().getName());
 					}else if(1==flag){
-						if(maintainRecord.getUsersByEnId()!=null)//Èç¹û»¹Ã»½øĞĞ±£ÑøÈ·ÈÏ¾Í°ÑÈ·ÈÏÈËĞÅÏ¢ÖÃÎªnull
+						if(maintainRecord.getUsersByEnId()!=null)//å¦‚æœè¿˜æ²¡è¿›è¡Œä¿å…»ç¡®è®¤å°±æŠŠç¡®è®¤äººä¿¡æ¯ç½®ä¸ºnull
 							maintainPerson.add(maintainRecord.getUsersByEnId().getName());
 						else
 							maintainPerson.add(null);
@@ -404,7 +405,7 @@ public class MaintainRecordService {
 					if(0==flag){
 							maintainPerson.add(maintainRecord.getUsersByUId().getName());
 					}else if(1==flag){
-						if(maintainRecord.getUsersByEnId()!=null)//Èç¹û»¹Ã»½øĞĞ±£ÑøÈ·ÈÏ¾Í°ÑÈ·ÈÏÈËĞÅÏ¢ÖÃÎªnull
+						if(maintainRecord.getUsersByEnId()!=null)//å¦‚æœè¿˜æ²¡è¿›è¡Œä¿å…»ç¡®è®¤å°±æŠŠç¡®è®¤äººä¿¡æ¯ç½®ä¸ºnull
 							maintainPerson.add(maintainRecord.getUsersByEnId().getName());
 						else
 							maintainPerson.add(null);
@@ -428,7 +429,7 @@ public class MaintainRecordService {
 					if(0==flag){
 							maintainPerson.add(maintainRecord.getUsersByUId().getName());
 					}else if(1==flag){
-						if(maintainRecord.getUsersByEnId()!=null)//Èç¹û»¹Ã»½øĞĞ±£ÑøÈ·ÈÏ¾Í°ÑÈ·ÈÏÈËĞÅÏ¢ÖÃÎªnull
+						if(maintainRecord.getUsersByEnId()!=null)//å¦‚æœè¿˜æ²¡è¿›è¡Œä¿å…»ç¡®è®¤å°±æŠŠç¡®è®¤äººä¿¡æ¯ç½®ä¸ºnull
 							maintainPerson.add(maintainRecord.getUsersByEnId().getName());
 						else
 							maintainPerson.add(null);
@@ -451,7 +452,7 @@ public class MaintainRecordService {
 				if(0==flag){
 						maintainPerson.add(maintainRecord.getUsersByUId().getName());
 				}else if(1==flag){
-					if(maintainRecord.getUsersByEnId()!=null)//Èç¹û»¹Ã»½øĞĞ±£ÑøÈ·ÈÏ¾Í°ÑÈ·ÈÏÈËĞÅÏ¢ÖÃÎªnull
+					if(maintainRecord.getUsersByEnId()!=null)//å¦‚æœè¿˜æ²¡è¿›è¡Œä¿å…»ç¡®è®¤å°±æŠŠç¡®è®¤äººä¿¡æ¯ç½®ä¸ºnull
 						maintainPerson.add(maintainRecord.getUsersByEnId().getName());
 					else
 						maintainPerson.add(null);
