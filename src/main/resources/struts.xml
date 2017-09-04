@@ -33,7 +33,7 @@
  		<action name="log_*" class="loginAction" method="{1}">
  			<result name="success">/WEB-INF/jsp/self/main.jsp</result>
  			<result name="logOut">/WEB-INF/jsp/loginUI.jsp</result>
- 			<result name="error">/WEB-INF/jsp/error.jsp</result>
+ 			<result name="error">/WEB-INF/jsp/loginUI.jsp</result>
  		</action>
  		
  		<action name="change_*" class="userAction" method="{1}">

@@ -8,20 +8,20 @@ import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Service;
 
+import com.hp.base.BaseDaoInter;
 import com.hp.domain.Users;
+import com.hp.serviceInter.LineServiceInter;
 
 @Service
-public class LineService {
+public class LineService  implements LineServiceInter{
 
 	@Resource
-	private SessionFactory sessionFactory;
+	private BaseDaoInter baseDao;
 	
 	public List<String> getLineNameByUser(Users user){
 		String hql = "SELECT line.name FROM Line line where line.department.id=?";
-		int departmentId = user.getDepartment().getId();
-	    Query query = sessionFactory.getCurrentSession().createQuery(hql);
-	    query.setInteger(0, departmentId);
-	    List<String> lineName = query.list();
-		return lineName;
+		Object[] parameters = {user.getDepartment().getId()};
+		List list = baseDao.getResult(hql, parameters);
+		return list;
 	}
 }

@@ -9,12 +9,14 @@ import org.apache.struts2.interceptor.SessionAware;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
+import com.hp.base.BaseAction;
 import com.hp.domain.Users;
 import com.hp.service.UserService;
+import com.hp.serviceInter.UserServiceInter;
 
 @Controller
 @Scope("prototype")
-public class UserAction implements RequestAware,SessionAware{
+public class UserAction extends BaseAction<Users>{
 
 	private String oldPassword;
 	private String newPassword;
@@ -23,8 +25,6 @@ public class UserAction implements RequestAware,SessionAware{
 	private Map<String,Object> request;
 	private Map<String, Object> session;
 
-	@Resource
-	private UserService userService;
 	public String goChangePasswordUI(){
 		request.put("type", "用户设置");
 		return "goChangePasswordUI";
@@ -74,13 +74,5 @@ public class UserAction implements RequestAware,SessionAware{
 		this.secondPassword = secondPassword;
 	}
 
-	public UserService getUserService() {
-		return userService;
-	}
-
-	public void setUserService(UserService userService) {
-		this.userService = userService;
-	}
-	
 	
 }

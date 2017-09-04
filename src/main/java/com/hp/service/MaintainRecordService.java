@@ -16,18 +16,21 @@ import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.hp.base.BaseDaoInter;
 import com.hp.domain.MaintainRecord;
 import com.hp.domain.Users;
+import com.hp.serviceInter.MaintainRecordServiceInter;
 import com.hp.utils.DateManger;
+import com.hp.utils.MaintainRecordManager;
 
 import javassist.expr.NewArray;
 
 @Service
 @Transactional
-public class MaintainRecordService {
+public class MaintainRecordService implements MaintainRecordServiceInter{
 
 	@Resource
-	private SessionFactory sessionFactory;
+	private BaseDaoInter baseDao;
 	
 	//月天数
 	private int[] monthCount = {31,0,31,30,31,30,31,31,30,31,30,31};
@@ -41,12 +44,8 @@ public class MaintainRecordService {
 	public Timestamp getLastMaintainTime(String eId,String type){
 		String hql = "From MaintainRecord m where m.maintainItems.datecycle.type=? AND m.equipment.eid=? AND"+
 					" m.maintaintime >= (SELECT MAX(mm.maintaintime) FROM MaintainRecord mm where mm.maintainItems.datecycle.type=? AND mm.equipment.eid=?)";
-		Query query = sessionFactory.getCurrentSession().createQuery(hql);
-		query.setString(0, type);
-		query.setString(1, eId);
-		query.setString(2, type);
-		query.setString(3, eId);
-		List list = query.list();
+		Object[] parameters = {type,eId,type,eId};
+		List list = baseDao.getResult(hql, parameters);
 		if(list != null && list.size()>0){
 			MaintainRecord maintainRecord = (MaintainRecord) list.get(0);
 			return maintainRecord.getMaintaintime();
@@ -59,7 +58,7 @@ public class MaintainRecordService {
 	 * @param maintainRecord
 	 */
 	public void saveMaintainRecord(MaintainRecord maintainRecord){
-		sessionFactory.getCurrentSession().save(maintainRecord);
+		baseDao.save(maintainRecord);
 		return;
 	}
 	
@@ -69,7 +68,7 @@ public class MaintainRecordService {
 	 */
 	public void saveAll(List<MaintainRecord> list){
 		for(MaintainRecord maintainRecord:list){
-			saveMaintainRecord(maintainRecord);
+			baseDao.save(maintainRecord);
 		}
 	}
 	
@@ -89,20 +88,16 @@ public class MaintainRecordService {
 				+ "m.usersByEnId.id IS null";
 		Timestamp startTime;
 		Timestamp endTime;
-		if(month != -1){//�գ��ܱ���
+		if(month != -1){//日 周 以外的其他周期 month=-1
 			int maxDayOfMonth =  new GregorianCalendar(year, month-1, 1).getActualMaximum(Calendar.DAY_OF_MONTH);
 			startTime =  new Timestamp(new GregorianCalendar(year, month-1, 1, 0, 0, 0).getTimeInMillis());
 			endTime = new Timestamp(new GregorianCalendar(year, month-1, maxDayOfMonth, 23, 59, 59).getTimeInMillis());
 		}else{
 			startTime = new Timestamp(new GregorianCalendar(year, 0, 0, 0, 0, 0).getTimeInMillis());
 			endTime = new Timestamp(new GregorianCalendar(year, 11, 31, 23, 59, 59).getTimeInMillis());
-		}
-		Query query = sessionFactory.getCurrentSession().createQuery(hql);
-		query.setInteger(0, user.getDepartment().getId());
-		query.setString(1, dateType);
-		query.setTime(2, startTime);
-		query.setTime(3, endTime);
-		List<MaintainRecord> list = query.list();
+		}		
+		Object[] parameters = {user.getDepartment().getId(),dateType,startTime,endTime};
+		List<MaintainRecord> list = baseDao.getResult(hql, parameters);
 		List<String[]> info = new ArrayList<String[]>();
 		for(MaintainRecord maintainRecord : list){
 			String[] messge = new String[11];
@@ -126,11 +121,14 @@ public class MaintainRecordService {
 		return info;
 	}
 	
+	/**
+	 * 返回保养记录
+	 * @param id 记录Id
+	 */
 	public MaintainRecord getMaintainRecordById(int id){
 		String hql = "from MaintainRecord m WHERE m.id=?";
-		Query query = sessionFactory.getCurrentSession().createQuery(hql);
-		query.setInteger(0, id);
-		List<MaintainRecord> list = query.list();
+		Object[] parameters = {id};
+		List<MaintainRecord> list = baseDao.getResult(hql, parameters);
 		if(list !=null && list.size() == 1){
 			return list.get(0);
 		}
@@ -148,35 +146,26 @@ public class MaintainRecordService {
 	 */
 	public List<String> getRecord(String equipmentEid,int maintainItermsId,int year,int month,String type){
 		List<String> result = new ArrayList<String>();
-		//���������
+		List<MaintainRecord> list = new ArrayList<MaintainRecord>();
+		//根据闰年与否来设置2月的天数
 		if((year%4==0&&year%100!=0)||(year%400==0)){
 			monthCount[1]=29;
 		}else{
 			monthCount[1]=28;
 		}
-		Timestamp startTime;
-		Timestamp endTime;
+		Timestamp startTime = null;
+		Timestamp endTime = null;
 		String hql = "FROM MaintainRecord m WHERE m.equipment.eid=? AND m.maintainItems.id=? AND "
 				+ "m.maintaintime>? AND m.maintaintime<? order by m.maintaintime DESC";
-		Query query = sessionFactory.getCurrentSession().createQuery(hql);
-		query.setParameter(0, equipmentEid);
-		query.setParameter(1, maintainItermsId);
-		
+		Object[] parameters = {equipmentEid,maintainItermsId,startTime,endTime};
 		if("day".equals(type)){
 			for(int i=0 ; i<monthCount[month-1] ; i++){
 				startTime = new Timestamp(new GregorianCalendar(year, month-1, i+1, 0, 0, 0).getTimeInMillis());
 				endTime = new Timestamp(new GregorianCalendar(year, month-1, i+1, 23, 59, 59).getTimeInMillis());
-				query.setParameter(2, startTime);
-				query.setParameter(3, endTime);
-				List<MaintainRecord> list = query.list();
-				if(list.isEmpty()){
-					result.add(null);
-				}else if(list.get(0).getMaintainItems().getSelection()==0){
-					result.add(list.get(0).getFirstResult());
-				}else {
-					result.add(list.get(0).getSecResult());
-				}
-				
+				parameters[2] = startTime;
+				parameters[3] = endTime;
+				list = baseDao.getResult(hql, parameters);
+				result.add(MaintainRecordManager.getResult(list));
 			}
 			return result;
 		}
@@ -199,16 +188,10 @@ public class MaintainRecordService {
 				}else{//次月的第一个星期6
 					endTime = new Timestamp(new GregorianCalendar(year, month, DateManger.getFirstSundayOfMonth(year, month+1)-1, 23, 59, 59).getTimeInMillis());
 				}
-				query.setParameter(2, startTime);
-				query.setParameter(3, endTime);
-				List<MaintainRecord> list = query.list();
-				if(list.isEmpty()){
-					result.add(null);
-				}else if(list.get(0).getMaintainItems().getSelection()==0){
-					result.add(list.get(0).getFirstResult());
-				}else {
-					result.add(list.get(0).getSecResult());
-				}
+				parameters[2] = startTime;
+				parameters[3] = endTime;
+				list = baseDao.getResult(hql, parameters);
+				result.add(MaintainRecordManager.getResult(list));
 			}
 			return result;
 		}
@@ -217,16 +200,10 @@ public class MaintainRecordService {
 			for(int i=0 ; i<12 ;i++){
 				startTime = new Timestamp(new GregorianCalendar(year, i, 1, 0, 0, 0).getTimeInMillis());
 				endTime = new Timestamp(new GregorianCalendar(year, i, monthCount[i], 23, 59, 59).getTimeInMillis());
-				query.setParameter(2, startTime);
-				query.setParameter(3, endTime);
-				List<MaintainRecord> list = query.list();
-				if(list.isEmpty()){
-					result.add(null);
-				}else if(list.get(0).getMaintainItems().getSelection()==0){
-					result.add(list.get(0).getFirstResult());
-				}else {
-					result.add(list.get(0).getSecResult());
-				}
+				parameters[2] = startTime;
+				parameters[3] = endTime;
+				list = baseDao.getResult(hql, parameters);
+				result.add(MaintainRecordManager.getResult(list));
 			}
 			return result;
 		}
@@ -235,16 +212,10 @@ public class MaintainRecordService {
 			for(int i=0 ; i<4 ;i++){
 				startTime = new Timestamp(new GregorianCalendar(year, i*3, 1, 0, 0, 0).getTimeInMillis());
 				endTime = new Timestamp(new GregorianCalendar(year, i*3+2, monthCount[i*3+2], 23, 59, 59).getTimeInMillis());
-				query.setParameter(2, startTime);
-				query.setParameter(3, endTime);
-				List<MaintainRecord> list = query.list();
-				if(list.isEmpty()){
-					result.add(null);
-				}else if(list.get(0).getMaintainItems().getSelection()==0){
-					result.add(list.get(0).getFirstResult());
-				}else {
-					result.add(list.get(0).getSecResult());
-				}
+				parameters[2] = startTime;
+				parameters[3] = endTime;
+				list = baseDao.getResult(hql, parameters);
+				result.add(MaintainRecordManager.getResult(list));
 			}
 			return result;
 		}
@@ -253,16 +224,10 @@ public class MaintainRecordService {
 			for(int i=0 ; i<2 ;i++){
 				startTime = new Timestamp(new GregorianCalendar(year, i*6, 1, 0, 0, 0).getTimeInMillis());
 				endTime = new Timestamp(new GregorianCalendar(year, i*6+5, monthCount[i*6+5], 23, 59, 59).getTimeInMillis());
-				query.setParameter(2, startTime);
-				query.setParameter(3, endTime);
-				List<MaintainRecord> list = query.list();
-				if(list.isEmpty()){
-					result.add(null);
-				}else if(list.get(0).getMaintainItems().getSelection()==0){
-					result.add(list.get(0).getFirstResult());
-				}else {
-					result.add(list.get(0).getSecResult());
-				}
+				parameters[2] = startTime;
+				parameters[3] = endTime;
+				list = baseDao.getResult(hql, parameters);
+				result.add(MaintainRecordManager.getResult(list));
 			}
 			return result;
 		}
@@ -270,17 +235,10 @@ public class MaintainRecordService {
 		if("year".equals(type)){
 			startTime = new Timestamp(new GregorianCalendar(year, 0, 1, 0, 0, 0).getTimeInMillis());
 			endTime = new Timestamp(new GregorianCalendar(year, 11, 31, 23, 59, 59).getTimeInMillis());
-			query.setParameter(2, startTime);
-			query.setParameter(3, endTime);
-			List<MaintainRecord> list = query.list();
-			if(list.isEmpty()){
-				result.add(null);
-			}else if(list.get(0).getMaintainItems().getSelection()==0){
-				result.add(list.get(0).getFirstResult());
-			}else {
-				result.add(list.get(0).getSecResult());
-			}
-		
+			parameters[2] = startTime;
+			parameters[3] = endTime;
+			list = baseDao.getResult(hql, parameters);
+			result.add(MaintainRecordManager.getResult(list));
 			return result;
 		}
 		return null;
@@ -297,40 +255,27 @@ public class MaintainRecordService {
 	 */
 	public List<String> getmaintainPerson(String equipmentEid,int year,int month,int flag,String type){
 		List<String> maintainPerson = new ArrayList<String>();
+		List<MaintainRecord> list = new ArrayList<MaintainRecord>();
 		//根据是否闰年 确定2月的天数
 		if((year%4==0&&year%100!=0)||(year%400==0)){
 			monthCount[1]=29;
 		}else{
 			monthCount[1]=28;
 		}
-		Timestamp startTime;
-		Timestamp endTime;
+		Timestamp startTime = null;
+		Timestamp endTime = null;
 		String hql = "FROM MaintainRecord m WHERE m.equipment.eid=? AND m.maintainItems.datecycle.type=? AND "
 				+ "m.maintaintime>? AND m.maintaintime<?";
-		Query query = sessionFactory.getCurrentSession().createQuery(hql);
-		query.setParameter(0, equipmentEid);
-		query.setParameter(1, type);
+		Object[] parameters = {equipmentEid,type,startTime,endTime};
 		//保养周期为日保养时 取 保养人 或 确认人
 		if("day".equals(type)){
 			for(int i=0 ; i<monthCount[month-1] ; i++){
 				startTime = new Timestamp(new GregorianCalendar(year, month-1, i+1, 0, 0, 0).getTimeInMillis());
 				endTime = new Timestamp(new GregorianCalendar(year, month-1, i+1, 23, 59, 59).getTimeInMillis());
-				query.setParameter(2,startTime);
-				query.setParameter(3, endTime);
-				List<MaintainRecord> list = query.list();
-				if(list.isEmpty()){
-					maintainPerson.add(null);
-				}else{
-					MaintainRecord maintainRecord = list.get(0);
-					if(0==flag){
-							maintainPerson.add(maintainRecord.getUsersByUId().getName());
-					}else if(1==flag){
-						if(maintainRecord.getUsersByEnId()!=null)//�����û���б���ȷ�ϾͰ�ȷ������Ϣ��Ϊnull
-							maintainPerson.add(maintainRecord.getUsersByEnId().getName());
-						else
-							maintainPerson.add(null);
-					}
-				}
+				parameters[2] = startTime;
+				parameters[3] = endTime;
+				list = baseDao.getResult(hql, parameters);
+				maintainPerson.add(MaintainRecordManager.getPerson(list, flag));
 			}
 			return maintainPerson;
 		}
@@ -347,22 +292,10 @@ public class MaintainRecordService {
 				}else{
 					endTime = new Timestamp(new GregorianCalendar(year, month, DateManger.getFirstSundayOfMonth(year, month+1)-1, 23, 59, 59).getTimeInMillis());
 				}
-				query.setParameter(2,startTime);
-				query.setParameter(3, endTime);
-				List<MaintainRecord> list = query.list();
-				if(list.isEmpty()){
-					maintainPerson.add(null);
-				}else{
-					MaintainRecord maintainRecord = list.get(0);
-					if(0==flag){
-							maintainPerson.add(maintainRecord.getUsersByUId().getName());
-					}else if(1==flag){
-						if(maintainRecord.getUsersByEnId()!=null)//如果还没进行保养确认就把确认人信息置为null
-							maintainPerson.add(maintainRecord.getUsersByEnId().getName());
-						else
-							maintainPerson.add(null);
-					}
-				}
+				parameters[2] = startTime;
+				parameters[3] = endTime;
+				list = baseDao.getResult(hql, parameters);
+				maintainPerson.add(MaintainRecordManager.getPerson(list, flag));
 			}
 			return maintainPerson;
 		}
@@ -371,22 +304,10 @@ public class MaintainRecordService {
 			for(int i=0 ; i<12 ;i++){
 				startTime = new Timestamp(new GregorianCalendar(year, i, 1, 0, 0, 0).getTimeInMillis());
 				endTime = new Timestamp(new GregorianCalendar(year, i, monthCount[i], 23, 59, 59).getTimeInMillis());
-				query.setParameter(2, startTime);
-				query.setParameter(3, endTime);
-				List<MaintainRecord> list = query.list();
-				if(list.isEmpty()){
-					maintainPerson.add(null);
-				}else{
-					MaintainRecord maintainRecord = list.get(0);
-					if(0==flag){
-							maintainPerson.add(maintainRecord.getUsersByUId().getName());
-					}else if(1==flag){
-						if(maintainRecord.getUsersByEnId()!=null)//如果还没进行保养确认就把确认人信息置为null
-							maintainPerson.add(maintainRecord.getUsersByEnId().getName());
-						else
-							maintainPerson.add(null);
-					}
-				}
+				parameters[2] = startTime;
+				parameters[3] = endTime;
+				list = baseDao.getResult(hql, parameters);
+				maintainPerson.add(MaintainRecordManager.getPerson(list, flag));
 			}
 			return maintainPerson;
 		}
@@ -395,22 +316,10 @@ public class MaintainRecordService {
 			for(int i=0 ; i<4 ;i++){
 				startTime = new Timestamp(new GregorianCalendar(year, i*3, 1, 0, 0, 0).getTimeInMillis());
 				endTime = new Timestamp(new GregorianCalendar(year, i*3+2, monthCount[i*3+2], 23, 59, 59).getTimeInMillis());
-				query.setParameter(2, startTime);
-				query.setParameter(3, endTime);
-				List<MaintainRecord> list = query.list();
-				if(list.isEmpty()){
-					maintainPerson.add(null);
-				}else{
-					MaintainRecord maintainRecord = list.get(0);
-					if(0==flag){
-							maintainPerson.add(maintainRecord.getUsersByUId().getName());
-					}else if(1==flag){
-						if(maintainRecord.getUsersByEnId()!=null)//如果还没进行保养确认就把确认人信息置为null
-							maintainPerson.add(maintainRecord.getUsersByEnId().getName());
-						else
-							maintainPerson.add(null);
-					}
-				}
+				parameters[2] = startTime;
+				parameters[3] = endTime;
+				list = baseDao.getResult(hql, parameters);
+				maintainPerson.add(MaintainRecordManager.getPerson(list, flag));
 			}
 			return maintainPerson;
 		}
@@ -419,22 +328,10 @@ public class MaintainRecordService {
 			for(int i=0 ; i<2 ;i++){
 				startTime = new Timestamp(new GregorianCalendar(year, i*6, 1, 0, 0, 0).getTimeInMillis());
 				endTime = new Timestamp(new GregorianCalendar(year, i*6+5, monthCount[i*6+5], 23, 59, 59).getTimeInMillis());
-				query.setParameter(2, startTime);
-				query.setParameter(3, endTime);
-				List<MaintainRecord> list = query.list();
-				if(list.isEmpty()){
-					maintainPerson.add(null);
-				}else{
-					MaintainRecord maintainRecord = list.get(0);
-					if(0==flag){
-							maintainPerson.add(maintainRecord.getUsersByUId().getName());
-					}else if(1==flag){
-						if(maintainRecord.getUsersByEnId()!=null)//如果还没进行保养确认就把确认人信息置为null
-							maintainPerson.add(maintainRecord.getUsersByEnId().getName());
-						else
-							maintainPerson.add(null);
-					}
-				}
+				parameters[2] = startTime;
+				parameters[3] = endTime;
+				list = baseDao.getResult(hql, parameters);
+				maintainPerson.add(MaintainRecordManager.getPerson(list, flag));
 			}
 			return maintainPerson;
 		}
@@ -442,22 +339,10 @@ public class MaintainRecordService {
 		if("year".equals(type)){
 			startTime = new Timestamp(new GregorianCalendar(year, 0, 1, 0, 0, 0).getTimeInMillis());
 			endTime = new Timestamp(new GregorianCalendar(year, 11, 31, 23, 59, 59).getTimeInMillis());
-			query.setParameter(2, startTime);
-			query.setParameter(3, endTime);
-			List<MaintainRecord> list = query.list();
-			if(list.isEmpty()){
-				maintainPerson.add(null);
-			}else{
-				MaintainRecord maintainRecord = list.get(0);
-				if(0==flag){
-						maintainPerson.add(maintainRecord.getUsersByUId().getName());
-				}else if(1==flag){
-					if(maintainRecord.getUsersByEnId()!=null)//如果还没进行保养确认就把确认人信息置为null
-						maintainPerson.add(maintainRecord.getUsersByEnId().getName());
-					else
-						maintainPerson.add(null);
-				}
-			}
+			parameters[2] = startTime;
+			parameters[3] = endTime;
+			list = baseDao.getResult(hql, parameters);
+			maintainPerson.add(MaintainRecordManager.getPerson(list, flag));
 			return maintainPerson;
 		}
 		return null;

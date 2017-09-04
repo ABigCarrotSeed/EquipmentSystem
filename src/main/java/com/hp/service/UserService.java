@@ -8,22 +8,24 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.hp.base.BaseDao;
+import com.hp.base.BaseDaoInter;
 import com.hp.domain.Users;
+import com.hp.serviceInter.UserServiceInter;
 
 @Service
-public class UserService {
-
-	@Resource
-	private SessionFactory sessionFactory;
+@Transactional
+public class UserService implements UserServiceInter{
 	
-	public Users checkLogin(Users users){
+	@Resource
+	private BaseDaoInter baseDao;
+	
+	public Users checkLogin(Users user){
 		String hql="from Users where jobId=? and password=?";
-		Query query= sessionFactory.getCurrentSession().createQuery(hql);
-		query.setString(0, users.getJobId());
-		query.setString(1, users.getPassword());
-		List list = query.list();
-		
+		Object[] parameters = {user.getJobId(),user.getPassword()};
+		List list = baseDao.getResult(hql, parameters);		
 		if(list != null && list.size()==1){
 			return (Users) list.get(0);
 		}
@@ -31,12 +33,7 @@ public class UserService {
 	}
 	
 	public Boolean changePassword(Users user){
-		System.out.println(user.getPassword()+" "+ user.getId());
-		Session session = sessionFactory.getCurrentSession();
-		session.beginTransaction();
-		session.update(user);
-		session.flush();
-		session.getTransaction().commit();
+		baseDao.update(user);
 		return true;
 	}
 

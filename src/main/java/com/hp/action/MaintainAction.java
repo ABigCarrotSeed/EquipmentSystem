@@ -11,6 +11,7 @@ import org.apache.struts2.interceptor.SessionAware;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
+import com.hp.base.BaseAction;
 import com.hp.domain.ConfirmInfo;
 import com.hp.domain.Equipment;
 import com.hp.domain.MaintainItems;
@@ -19,12 +20,16 @@ import com.hp.domain.Users;
 import com.hp.service.LineService;
 import com.hp.service.MaintainItemsService;
 import com.hp.service.MaintainRecordService;
+import com.hp.serviceInter.EquipmentServiceInter;
+import com.hp.serviceInter.LineServiceInter;
+import com.hp.serviceInter.MaintainItemsServiceInter;
+import com.hp.serviceInter.MaintainRecordServiceInter;
 import com.hp.utils.DateManger;
 import com.hp.service.EquipmentService;
 
 @Controller
 @Scope("prototype")
-public class MaintainAction implements SessionAware,RequestAware{
+public class MaintainAction extends BaseAction<MaintainItems>{
 
 	private String lineName;//线别名
 	private String equipmentEId;//设备码
@@ -35,14 +40,6 @@ public class MaintainAction implements SessionAware,RequestAware{
 	private List<MaintainRecord> recodeList;
 	//确认信息
 	private List<ConfirmInfo> confirmList;
-	@Resource
-	private LineService lineService;
-	@Resource
-	private EquipmentService equipmentService;
-	@Resource
-	private MaintainRecordService maintainRecordService;
-	@Resource
-	private MaintainItemsService maintainItemsService;
 	private Map<String,Object> session;
 	private Map<String,Object> request;
 	

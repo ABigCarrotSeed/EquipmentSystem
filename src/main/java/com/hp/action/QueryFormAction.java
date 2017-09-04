@@ -10,16 +10,21 @@ import org.apache.struts2.interceptor.SessionAware;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
+import com.hp.base.BaseAction;
 import com.hp.domain.Equipment;
 import com.hp.domain.MaintainItems;
+import com.hp.domain.MaintainRecord;
 import com.hp.domain.Users;
 import com.hp.service.EquipmentService;
 import com.hp.service.MaintainItemsService;
 import com.hp.service.MaintainRecordService;
+import com.hp.serviceInter.EquipmentServiceInter;
+import com.hp.serviceInter.MaintainItemsServiceInter;
+import com.hp.serviceInter.MaintainRecordServiceInter;
 
 @Controller
 @Scope("prototype")
-public class QueryFormAction implements RequestAware,SessionAware{
+public class QueryFormAction extends BaseAction<MaintainRecord>{
 
 	private String dateType;
 	private int year;
@@ -34,12 +39,6 @@ public class QueryFormAction implements RequestAware,SessionAware{
 	private Map<String,Object> request ;
 	private Map<String,Object> session;
 	
-	@Resource
-	private EquipmentService equipmentService;
-	@Resource
-	private MaintainItemsService maintainItemsService;
-	@Resource
-	private MaintainRecordService maintainRecordService;
 	
 	public String goQueryUI(){
 		request.put("type", "保养记录查询");

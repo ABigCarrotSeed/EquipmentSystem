@@ -8,28 +8,28 @@ import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Service;
 
+import com.hp.base.BaseDao;
+import com.hp.base.BaseDaoInter;
 import com.hp.domain.Equipment;
 import com.hp.domain.Users;
+import com.hp.serviceInter.EquipmentServiceInter;
 
 @Service
-public class EquipmentService {
+public class EquipmentService implements EquipmentServiceInter{
 	@Resource
-	private SessionFactory sessionFactory;
+	private BaseDaoInter baseDao;
 	
 	public List<Equipment> getAllEquipment(Users user){
 		String hql = "FROM Equipment e WHERE e.line.department.id=?";
-		int id = user.getDepartment().getId();
-		Query query = sessionFactory.getCurrentSession().createQuery(hql);
-		query.setInteger(0, id);
-		List<Equipment> list = query.list();
+		Object[] parameters = {user.getDepartment().getId()};
+		List list=baseDao.getResult(hql, parameters);
 		return list;
 	}
 	
 	public Equipment getEquipmentByEId(String Eid){
 		String hql = "FROM Equipment e WHERE e.eid=?";
-		Query query = sessionFactory.getCurrentSession().createQuery(hql);
-		query.setString(0, Eid);
-		List list = query.list();
+		Object[] parameters = {Eid};
+		List list = baseDao.getResult(hql, parameters); 
 		if(list!=null && list.size()==1){
 			return (Equipment) list.get(0);
 		}
@@ -45,19 +45,15 @@ public class EquipmentService {
 	 */
 	public List<Equipment> getEquipmentByPage(Users user,int page,int pageSize){
 		String hql = "FROM Equipment e WHERE e.line.department.id=?";
-		Query query = sessionFactory.getCurrentSession().createQuery(hql);
-		query.setParameter(0, user.getDepartment().getId());
-		query.setFirstResult((page-1)*pageSize);
-		query.setMaxResults(pageSize);
-		List list = query.list();
+		Object[] parameters = {user.getDepartment().getId()};
+		List list = baseDao.getByPage(hql, parameters, page, pageSize);
 		return list;
 	}
 	
 	public int getPageTotal(Users user,int pageSize){
 		String hql = "FROM Equipment e WHERE e.line.department.id=?";
-		Query query = sessionFactory.getCurrentSession().createQuery(hql);
-		query.setParameter(0, user.getDepartment().getId());
-		List list = query.list();
+		Object[] parameters = {user.getDepartment().getId()};
+		List list = baseDao.getResult(hql, parameters);
 		return list.size()%pageSize==0?(list.size()/pageSize):(list.size()/pageSize+1) ;
 	}
 }
